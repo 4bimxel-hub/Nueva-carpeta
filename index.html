@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<title>ECO v1 Android | Evaluaciones Consultas Organizadas</title>
+<style>
+:root{--navy:#0f172a;--blue:#2563eb;--green:#15803d;--light:#f1f5f9;--line:#cbd5e1;--text:#1e293b}
+*{box-sizing:border-box}
+html{font-family:Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--light);color:var(--text);min-width:320px}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+.hidden{display:none!important}
+.muted{color:#64748b}
+.small{font-size:.85rem}
+.container{padding:24px;max-width:1600px;margin:auto}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(135deg,#1e3a8a,#0f172a,#166534)}
+.login-card{background:white;width:100%;max-width:430px;border-radius:18px;overflow:hidden;box-shadow:0 20px 50px #0003}
+.login-head{padding:30px 22px;text-align:center;color:white;background:linear-gradient(100deg,#1d4ed8,#16a34a)}
+.logo{width:68px;height:68px;margin:0 auto 12px;border-radius:50%;display:grid;place-items:center;background:#ffffff2b;font-size:32px}
+.login-head h1{margin:0;font-size:32px}
+.login-head p{margin:8px 0}
+.login-form{padding:24px;display:grid;gap:15px}
+label{display:block;font-size:.9rem;font-weight:700;margin-bottom:7px}
+input,select,textarea{width:100%;padding:12px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--text);min-width:0}
+textarea{resize:vertical}
+input:focus,select:focus,textarea:focus{outline:2px solid #93c5fd;border-color:#3b82f6}
+.btn{border:0;border-radius:8px;padding:11px 15px;background:var(--blue);color:white;font-weight:700;display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.btn:hover{filter:brightness(.94)}
+.btn.green{background:var(--green)}
+.btn.dark{background:#334155}
+.btn.red{background:#dc2626}
+.btn.light{background:#e2e8f0;color:#1e293b}
+.btn.yellow{background:#fef3c7;color:#92400e}
+.btn-row{display:flex;gap:8px;flex-wrap:wrap}
+.error{background:#fee2e2;color:#991b1b;padding:10px;border-radius:8px}
+.app{min-height:100vh}
+.sidebar{position:fixed;inset:0 auto 0 0;width:255px;background:var(--navy);color:white;display:flex;flex-direction:column;z-index:10}
+.brand{padding:22px;border-bottom:1px solid #334155}
+.brand h2{margin:0 0 5px}
+.brand p{margin:0;color:#94a3b8;font-size:.8rem}
+.nav{padding:14px;display:grid;gap:7px;align-content:start;flex:1}
+.nav button{text-align:left;border:0;border-radius:8px;padding:12px;color:#e2e8f0;background:transparent}
+.nav button:hover,.nav button.active{background:#2563eb;color:white}
+.userbox{padding:16px;border-top:1px solid #334155}
+.userbox p{margin:4px 0 10px;overflow-wrap:anywhere}
+.main{margin-left:255px;min-width:0}
+.topbar{position:sticky;top:0;z-index:5;background:white;border-bottom:1px solid #e2e8f0;padding:18px 24px}
+.topbar h2{margin:0;font-size:1.45rem}
+.card{background:white;border-radius:12px;padding:22px;box-shadow:0 2px 8px #0f172a0c;margin-bottom:20px}
+.hero{color:white;border-radius:14px;padding:26px;background:linear-gradient(100deg,#1d4ed8,#15803d);margin-bottom:22px}
+.hero h2{margin:0 0 10px;font-size:clamp(1.5rem,3vw,2rem)}
+.hero p{margin:0;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.stat{background:white;padding:20px;border-radius:12px;box-shadow:0 2px 8px #0f172a0c}
+.stat .symbol{font-size:1.6rem;color:#2563eb}
+.stat p{margin:10px 0 5px;color:#64748b}
+.stat h3{margin:0;font-size:2rem}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.section-title h3{margin:0;font-size:1.2rem}
+.table-wrap{width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:650px}
+th,td{text-align:left;padding:12px;border-bottom:1px solid #e2e8f0;vertical-align:top}
+th{background:#f1f5f9;font-size:.9rem}
+td{overflow-wrap:anywhere}
+.actions{white-space:nowrap}
+.actions button{padding:7px 9px;border:0;border-radius:6px;margin:1px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.field-full{grid-column:1/-1}
+.modal{position:fixed;inset:0;background:#0009;z-index:30;display:flex;align-items:center;justify-content:center;padding:16px;overflow:auto}
+.modal-card{background:white;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:12px}
+.modal-head{padding:16px 20px;color:white;background:#1d4ed8;display:flex;align-items:center;justify-content:space-between}
+.modal-head.green{background:#15803d}
+.modal-head h3{margin:0}
+.modal-body{padding:20px;display:grid;gap:14px}
+.modal-footer{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+.report{border:1px solid #cbd5e1;border-radius:10px;padding:30px;background:white}
+.report-head{text-align:center;border-bottom:1px solid #cbd5e1;padding-bottom:16px;margin-bottom:22px}
+.report-head h1{color:#1d4ed8;margin:0 0 8px}
+.report-head h2{margin:0 0 8px}
+.report-details{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-bottom:24px}
+.report-details p{margin:5px 0}
+.report-block{margin:22px 0}
+.report-block h3{border-bottom:1px solid #cbd5e1;padding-bottom:8px}
+.eval-card{border:1px solid #cbd5e1;border-radius:8px;padding:14px;margin:12px 0;break-inside:avoid}
+.signatures{display:grid;grid-template-columns:1fr 1fr;gap:50px;margin-top:70px;text-align:center}
+.signature{border-top:1px solid #64748b;padding-top:10px}
+.notice{font-size:.8rem;color:#64748b;line-height:1.5;margin-top:12px}
+.status-on{color:#166534;font-weight:bold}.status-off{color:#b91c1c;font-weight:bold}
+@media(max-width:1000px){
+.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.container{padding:16px}
+.topbar{padding:16px}
+}
+@media(max-width:700px){
+body{font-size:16px;-webkit-tap-highlight-color:transparent;padding-bottom:env(safe-area-inset-bottom)}
+button{min-height:42px;touch-action:manipulation}
+input,select,textarea{font-size:16px;min-height:44px}
+.sidebar{position:relative;inset:auto;width:100%;height:auto}
+.brand{padding:15px 18px}
+.nav{grid-template-columns:repeat(2,minmax(0,1fr));padding:10px;gap:6px}
+.nav button{padding:10px 8px;font-size:.84rem}
+.userbox{padding:12px 16px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px 10px}
+.userbox #currentUser{grid-column:1}
+.userbox #currentRole{grid-column:1;margin:0}
+.userbox button{grid-column:2;grid-row:1/3}
+.main{margin-left:0;width:100%}
+.topbar{position:static;padding:14px}
+.topbar h2{font-size:1.2rem}
+.container{padding:12px}
+.card{padding:15px}
+.hero{padding:20px}
+.stats{gap:10px}
+.stat{padding:14px}
+.stat h3{font-size:1.6rem}
+.stat p{font-size:.85rem}
+.form-grid,.report-details{grid-template-columns:1fr}
+.field-full{grid-column:auto}
+.report{padding:15px}
+.signatures{gap:22px;margin-top:48px}
+.modal{align-items:flex-start;padding:8px}
+.modal-card{margin:auto;max-height:none}
+.modal-body{padding:15px}
+}
+@media print{
+@page{size:A4;margin:15mm}
+body{background:white!important}
+.no-print,#loginScreen,#app,.modal{display:none!important}
+#reportPreview{display:block!important;position:absolute;inset:0;width:100%;border:0!important;padding:0!important;box-shadow:none!important}
+#reportPreview *{visibility:visible!important}
+.report{border:0;padding:0}
+.report-head h1{color:#111}
+.eval-card{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+ 
+<div id="loginScreen" class="login-wrap">
+<div class="login-card">
+<div class="login-head">
+<div class="logo">🧠</div>
+<h1>ECO v1</h1>
+<p>Evaluaciones Consultas Organizadas</p>
+<span class="small">Gestión Psicopedagógica y Psicomotora</span>
+</div>
+ 
+<form id="loginForm" class="login-form">
+<div>
+<label for="username">Usuario</label>
+<select id="username" required>
+<option value="">Seleccione su usuario</option>
+<option value="Lic. Fabiola Hurtado">Lic. Fabiola Hurtado — Administrador</option>
+<option value="Campos Rodríguez Gloria Eloyza">Campos Rodríguez Gloria Eloyza — Docente</option>
+<option value="Gutiérrez Arancibia Victoria">Gutiérrez Arancibia Victoria — Docente</option>
+<option value="Velásquez Aduvini Ángel Gabriel">Velásquez Aduvini Ángel Gabriel — Docente</option>
+<option value="Choque Tapia Llanoff Orietta">Choque Tapia Llanoff Orietta — Docente</option>
+<option value="Arancibia Baldivieso Pablo David">Arancibia Baldivieso Pablo David — Docente</option>
+<option value="Caquira Yujra Cristina">Caquira Yujra Cristina — Docente</option>
+<option value="Ramos Guarachi Jhony Iván">Ramos Guarachi Jhony Iván — Docente</option>
+<option value="Chura Mata Mery">Chura Mata Mery — Docente</option>
+<option value="Ortega Tupa Olga">Ortega Tupa Olga — Docente</option>
+<option value="Mamani Cordero Esther">Mamani Cordero Esther — Docente</option>
+<option value="Pelaez Alvarez Karen">Pelaez Alvarez Karen — Docente</option>
+<option value="Gutiérrez Herrera Crisol">Gutiérrez Herrera Crisol — Docente</option>
+<option value="Chino Paredes Virginia">Chino Paredes Virginia — Docente</option>
+<option value="Orazco Gerónimo Magda">Orazco Gerónimo Magda — Docente</option>
+<option value="Pabón Rivero Ana">Pabón Rivero Ana — Docente</option>
+<option value="Ishado Montes Edward">Ishado Montes Edward — Docente</option>
+<option value="Rojas Rodolfo">Rojas Rodolfo — Docente</option>
+<option value="Loza Anquipa Genoveva">Loza Anquipa Genoveva — Docente</option>
+<option value="Quispe Cortez David">Quispe Cortez David — Docente</option>
+<option value="Malericona Ramos Elmer">Malericona Ramos Elmer — Docente</option>
+<option value="Quispe Villareal Berthy">Quispe Villareal Berthy — Docente</option>
+<option value="Flores Solar Judith">Flores Solar Judith — Docente</option>
+<option value="Avila Ramírez María">Avila Ramírez María — Docente</option>
+<option value="Vargas Sarmento Christian Guillermo">Vargas Sarmento Christian Guillermo — Docente</option>
+<option value="Cori Alvarez Roger">Cori Alvarez Roger — Docente</option>
+<option value="Quisbert Quisbert José">Quisbert Quisbert José — Docente</option>
+<option value="Angola Bejarano Eugenio">Angola Bejarano Eugenio — Docente</option>
+<option value="Milán Vera Judith">Milán Vera Judith — Docente</option>
+<option value="Sirpa Callisaya Beatriz">Sirpa Callisaya Beatriz — Docente</option>
+<option value="Pally Aduvini Jorge">Pally Aduvini Jorge — Docente</option>
+<option value="Veliz Guzmán Balbina">Veliz Guzmán Balbina — Docente</option>
+<option value="Kuno Coarite Ubaldo">Kuno Coarite Ubaldo — Docente</option>
+<option value="Llo Manani Sergio">Llo Manani Sergio — Docente</option>
+<option value="Gutiérrez Miranda Jeannett">Gutiérrez Miranda Jeannett — Docente</option>
+<option value="Llanque Cale Natalia">Llanque Cale Natalia — Docente</option>
+<option value="Ulo Condori Rosibel">Ulo Condori Rosibel — Docente</option>
+<option value="Machaca Alejo Silvia">Machaca Alejo Silvia — Docente</option>
+<option value="Burgoa Aguirre Agueda">Burgoa Aguirre Agueda — Docente</option>
+<option value="Acurichi Callisaya Victor">Acurichi Callisaya Victor — Docente</option>
+<option value="López Huari callo Eva">López Huari callo Eva — Docente</option>
+<option value="Rivas Choque Rolando">Rivas Choque Rolando — Docente</option>
+<option value="Llanos Miranda Félix">Llanos Miranda Félix — Docente</option>
+<option value="Alcázar Silva Ramiro">Alcázar Silva Ramiro — Docente</option>
+<option value="Flores López Adalid">Flores López Adalid — Docente</option>
+<option value="Warronel Arce Oscar">Warronel Arce Oscar — Docente</option>
+<option value="Pinto Burgoa Juan">Pinto Burgoa Juan — Docente</option>
+<option value="Troche Choque Neil">Troche Choque Neil — Docente</option>
+<option value="Colque Condori Victor Hugo">Colque Condori Victor Hugo — Docente</option>
+<option value="Choque Choquehuanca Guido">Choque Choquehuanca Guido — Docente</option>
+</select>
+</div>
+ 
+<div>
+<label for="password">Contraseña</label>
+<input id="password" type="password" autocomplete="current-password" placeholder="Ingrese contraseña" required>
+</div>
+<div id="loginError" class="error hidden">Contraseña incorrecta.</div>
+<button class="btn" type="submit">Iniciar sesión</button>
+<div class="small muted" style="text-align:center;border-top:1px solid #e2e8f0;padding-top:14px">
+Versión optimizada para teléfonos Android<br>
+Proyecto de Titulación<br>
+<strong>Técnico Medio en Sistemas Informáticos</strong>
+</div>
+</form>
+</div>
+</div>
+ 
+<div id="app" class="app hidden">
+<aside class="sidebar">
+<div class="brand"><h2>🧠 ECO v1</h2><p>Sistema Psicopedagógico</p></div>
+<nav class="nav">
+<button class="active" data-section="dashboard" onclick="showSection('dashboard')">📊 Panel de Control</button>
+<button data-section="students" onclick="showSection('students')">👥 Estudiantes</button>
+<button data-section="evaluations" onclick="showSection('evaluations')">📋 Evaluaciones</button>
+<button data-section="reports" onclick="showSection('reports')">📄 Reportes</button>
+<button data-section="thesis" onclick="showSection('thesis')">🎓 Tesis</button>
+<button id="adminNavButton" data-section="admin" onclick="showSection('admin')" class="hidden">🔐 Gestión de docentes</button>
+</nav>
+<div class="userbox">
+<strong id="currentUser"></strong>
+<span id="currentRole" class="small" style="color:#86efac"></span>
+<button class="btn red" onclick="logout()">Cerrar sesión</button>
+</div>
+</aside>
+ 
+<main class="main">
+<header class="topbar"><h2 id="pageTitle">Panel de Control</h2></header>
+<div class="container">
+<section id="dashboardSection">
+<div class="hero"><h2 id="welcome">Bienvenido</h2><p>Plataforma para el registro, evaluación y seguimiento psicopedagógico y psicomotor.</p></div>
+<div class="stats">
+<div class="stat"><div class="symbol">👥</div><p>Estudiantes</p><h3 id="totalStudents">0</h3></div>
+<div class="stat"><div class="symbol">🧠</div><p>Psicopedagógicas</p><h3 id="totalPsycho">0</h3></div>
+<div class="stat"><div class="symbol">🏃</div><p>Psicomotoras</p><h3 id="totalMotor">0</h3></div>
+<div class="stat"><div class="symbol">📈</div><p>Evaluaciones</p><h3 id="totalEvaluations">0</h3></div>
+</div>
+<div class="card" style="margin-top:20px">
+<h3>Últimos estudiantes registrados</h3>
+<div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Curso</th><th>Tutor</th></tr></thead><tbody id="recentStudents"></tbody></table></div>
+</div>
+</section>
+ 
+<section id="studentsSection" class="hidden">
+<div class="card">
+<div class="section-title"><h3>Registro de estudiantes</h3><button id="newStudentButton" class="btn" onclick="openStudentModal()">＋ Nuevo estudiante</button></div>
+<input id="studentSearch" placeholder="Buscar por nombre, curso o tutor..." oninput="renderStudents()" style="margin-bottom:16px">
+<div class="table-wrap"><table><thead><tr><th>Nombre</th><th>Edad</th><th>Sexo</th><th>Curso</th><th>Tutor</th><th>Acciones</th></tr></thead><tbody id="studentsTable"></tbody></table></div>
+</div>
+</section>
+ 
+<section id="evaluationsSection" class="hidden">
+<div class="card">
+<div class="section-title"><h3>Evaluaciones y seguimiento</h3><button id="newEvaluationButton" class="btn green" onclick="openEvaluationModal()">＋ Nueva evaluación</button></div>
+<div class="table-wrap"><table><thead><tr><th>Fecha</th><th>Estudiante</th><th>Tipo</th><th>Test</th><th>Resultado</th><th>Acciones</th></tr></thead><tbody id="evaluationsTable"></tbody></table></div>
+</div>
+</section>
+ 
+<section id="reportsSection" class="hidden">
+<div class="card">
+<h3>Generador de reportes</h3>
+<div class="btn-row" style="margin:16px 0">
+<select id="reportStudent" style="flex:1"><option value="">Seleccionar estudiante</option></select>
+<button class="btn" onclick="generateReport()">Generar</button>
+</div>
+<div id="reportPreview" class="report hidden">
+<div class="report-head"><h1>ECO v1</h1><h2>FICHA INDIVIDUAL PSICOPEDAGÓGICA</h2><p>Evaluaciones Consultas Organizadas</p></div>
+<div class="report-details">
+<div><strong>Estudiante:</strong><p id="reportName"></p></div>
+<div><strong>Edad:</strong><p id="reportAge"></p></div>
+<div><strong>Sexo:</strong><p id="reportSex"></p></div>
+<div><strong>Curso:</strong><p id="reportCourse"></p></div>
+<div><strong>Tutor:</strong><p id="reportTutor"></p></div>
+<div><strong>Teléfono:</strong><p id="reportPhone"></p></div>
+</div>
+<div class="report-block"><h3>Dificultades / diagnóstico</h3><p id="reportObservations"></p></div>
+<div class="report-block"><h3>Estrategias y adaptaciones</h3><p id="reportStrategies"></p></div>
+<div class="report-block"><h3>Historial de evaluaciones</h3><div id="reportEvaluations"></div></div>
+<div class="signatures"><div class="signature"><strong>Lic. Fabiola Hurtado</strong><p>Especialista</p></div><div class="signature"><strong>Responsable del Sistema</strong><p>ECO v1</p></div></div>
+<div class="no-print" style="text-align:center;margin-top:28px"><button class="btn dark" onclick="window.print()">Imprimir / Guardar como PDF</button></div>
+</div>
+</div>
+</section>
+ 
+<section id="thesisSection" class="hidden">
+<div class="card">
+<span class="small" style="color:#1d4ed8;font-weight:bold">PROYECTO DE GRADO</span>
+<h2>Sistema ECO v1</h2><p class="muted">Evaluaciones Consultas Organizadas</p>
+<div class="stats" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:20px">
+<div style="background:#f8fafc;padding:18px;border-radius:10px"><h3>Justificación</h3><p>Permite organizar el registro, seguimiento y evaluación psicopedagógica y psicomotora de estudiantes.</p></div>
+<div style="background:#f8fafc;padding:18px;border-radius:10px"><h3>Tecnologías</h3><p>HTML5, CSS y JavaScript con almacenamiento local del navegador.</p></div>
+</div>
+<div style="background:#0f172a;color:white;padding:20px;border-radius:10px;margin-top:18px"><h3>Conclusión</h3><p>El sistema ECO v1 facilita la organización de información estudiantil, evaluaciones y reportes para apoyar el seguimiento de los estudiantes.</p></div>
+</div>
+</section>
+ 
+<section id="adminSection" class="hidden">
+<div class="card">
+  <div class="section-title"><h3>Gestión de docentes</h3></div>
+  <p class="muted">Añade docentes, modifica sus datos, cambia contraseñas o bloquea/desbloquea su acceso.</p>
+  <form id="teacherForm" class="form-grid">
+    <div><label for="teacherName">Nombre completo del docente</label><input id="teacherName" maxlength="150" required placeholder="Nombre y apellidos"></div>
+    <div><label for="teacherPassword">Contraseña inicial</label><input id="teacherPassword" type="password" minlength="4" maxlength="100" required placeholder="Crear contraseña"></div>
+    <div class="field-full"><button class="btn green" type="submit">＋ Añadir docente</button></div>
+  </form>
+  <div class="table-wrap" style="margin-top:18px">
+    <table><thead><tr><th>Docente</th><th>Estado</th><th>Acciones</th></tr></thead><tbody id="teachersTable"></tbody></table>
+  </div>
+</div>
+<div class="card">
+  <div class="section-title"><h3>Registro de accesos</h3><button class="btn light" onclick="clearLoginLogs()">Borrar historial</button></div>
+  <p class="small muted">Se muestra el usuario y la fecha/hora de cada inicio de sesión guardado en este navegador.</p>
+  <div class="table-wrap"><table><thead><tr><th>Fecha y hora</th><th>Usuario</th><th>Rol</th><th>Resultado</th></tr></thead><tbody id="loginLogsTable"></tbody></table></div>
+</div>
+</section>
+ 
+<p class="notice">Aviso: esta versión guarda datos, cuentas e historial de accesos solo en este navegador. No sincroniza entre dispositivos y no es segura para uso real con datos sensibles: las contraseñas se guardan localmente. Para acceso compartido y auditoría fiable, conectar una base de datos en la nube con autenticación segura y permisos.</p>
+</div>
+</main>
+</div>
+ 
+<div id="studentModal" class="modal hidden">
+<div class="modal-card">
+<div class="modal-head"><h3 id="studentModalTitle">Nuevo estudiante</h3><button onclick="closeStudentModal()" aria-label="Cerrar">✕</button></div>
+<form id="studentForm" class="modal-body">
+<input type="hidden" id="studentId">
+<div><label for="studentName">Nombre completo</label><input id="studentName" maxlength="150" required></div>
+<div class="form-grid">
+<div><label for="studentAge">Edad</label><input id="studentAge" type="number" min="3" max="25" required></div>
+<div><label for="studentSex">Sexo</label><select id="studentSex"><option>Masculino</option><option>Femenino</option><option>Otro</option></select></div>
+</div>
+<div class="form-grid">
+<div><label for="studentLevel">Nivel educativo</label><select id="studentLevel" required><option value="">Seleccionar nivel</option><option>Inicial</option><option>Primaria</option><option>Secundaria</option></select></div>
+<div><label for="studentShift">Turno</label><select id="studentShift" required><option value="">Seleccionar turno</option><option>Mañana</option><option>Tarde</option></select></div>
+</div>
+<div class="form-grid">
+<div><label for="studentParallel">Paralelo</label><select id="studentParallel" required><option value="">Seleccionar paralelo</option><option>A</option><option>B</option><option>C</option></select></div>
+<div><label for="studentGrade">Curso / sección</label><select id="studentGrade" required><option value="">Seleccionar curso</option><option value="Primera sección 1">Primera sección 1</option><option value="Segunda sección 2">Segunda sección 2</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select></div>
+</div>
+<p class="small muted">El curso, nivel, turno y paralelo se mostrarán juntos en las listas y reportes.</p>
+<div><label for="studentTutor">Tutor / padre / madre</label><input id="studentTutor" maxlength="150" required></div>
+<div><label for="studentPhone">Teléfono</label><input id="studentPhone" type="tel" maxlength="40" required></div>
+<div><label for="studentObservation">Dificultades / diagnóstico</label><textarea id="studentObservation" rows="4" maxlength="3000" placeholder="Describa las dificultades identificadas o el diagnóstico informado."></textarea></div>
+<div><label for="studentStrategies">Estrategias y adaptaciones</label><textarea id="studentStrategies" rows="4" maxlength="4000" placeholder="Registre estrategias de apoyo, adaptaciones curriculares y recomendaciones para el aula."></textarea></div>
+<div class="modal-footer"><button type="button" class="btn light" onclick="closeStudentModal()">Cancelar</button><button type="submit" class="btn">Guardar estudiante</button></div>
+</form>
+</div>
+</div>
+ 
+<div id="evaluationModal" class="modal hidden">
+<div class="modal-card">
+<div class="modal-head green"><h3>Nueva evaluación</h3><button onclick="closeEvaluationModal()" aria-label="Cerrar">✕</button></div>
+<form id="evaluationForm" class="modal-body">
+<div><label for="evaluationStudent">Estudiante</label><select id="evaluationStudent" required><option value="">Seleccionar estudiante</option></select></div>
+<div><label for="evaluationType">Tipo de evaluación</label><select id="evaluationType"><option>Psicopedagógica</option><option>Psicomotora</option><option>Seguimiento Continuo</option></select></div>
+<div><label for="evaluationDate">Fecha</label><input id="evaluationDate" type="date" required></div>
+<div><label for="evaluationTest">Test o batería aplicada</label><input id="evaluationTest" maxlength="200" required></div>
+<div><label for="evaluationDiagnosis">Diagnóstico / resultado</label><textarea id="evaluationDiagnosis" rows="4" maxlength="4000" required></textarea></div>
+<div><label for="evaluationRecommendations">Recomendaciones</label><textarea id="evaluationRecommendations" rows="3" maxlength="4000" required></textarea></div>
+<div class="modal-footer"><button type="button" class="btn light" onclick="closeEvaluationModal()">Cancelar</button><button type="submit" class="btn green">Guardar evaluación</button></div>
+</form>
+</div>
+</div>
+ 
+<script>
+"use strict";
+let students=readList("eco_students");
+let evaluations=readList("eco_evaluations");
+let currentUser=null;
+ 
+const teacherUsers=[
+"Campos Rodríguez Gloria Eloyza",
+"Gutiérrez Arancibia Victoria",
+"Velásquez Aduvini Ángel Gabriel",
+"Choque Tapia Llanoff Orietta",
+"Arancibia Baldivieso Pablo David",
+"Caquira Yujra Cristina",
+"Ramos Guarachi Jhony Iván",
+"Chura Mata Mery",
+"Ortega Tupa Olga",
+"Mamani Cordero Esther",
+"Pelaez Alvarez Karen",
+"Gutiérrez Herrera Crisol",
+"Chino Paredes Virginia",
+"Orazco Gerónimo Magda",
+"Pabón Rivero Ana",
+"Ishado Montes Edward",
+"Rojas Rodolfo",
+"Loza Anquipa Genoveva",
+"Quispe Cortez David",
+"Malericona Ramos Elmer",
+"Quispe Villareal Berthy",
+"Flores Solar Judith",
+"Avila Ramírez María",
+"Vargas Sarmento Christian Guillermo",
+"Cori Alvarez Roger",
+"Quisbert Quisbert José",
+"Angola Bejarano Eugenio",
+"Milán Vera Judith",
+"Sirpa Callisaya Beatriz",
+"Pally Aduvini Jorge",
+"Veliz Guzmán Balbina",
+"Kuno Coarite Ubaldo",
+"Llo Manani Sergio",
+"Gutiérrez Miranda Jeannett",
+"Llanque Cale Natalia",
+"Ulo Condori Rosibel",
+"Machaca Alejo Silvia",
+"Burgoa Aguirre Agueda",
+"Acurichi Callisaya Victor",
+"López Huari callo Eva",
+"Rivas Choque Rolando",
+"Llanos Miranda Félix",
+"Alcázar Silva Ramiro",
+"Flores López Adalid",
+"Warronel Arce Oscar",
+"Pinto Burgoa Juan",
+"Troche Choque Neil",
+"Colque Condori Victor Hugo",
+"Choque Choquehuanca Guido"
+];
+ 
+function readList(key){
+ try{
+  const value=JSON.parse(localStorage.getItem(key)||"[]");
+  return Array.isArray(value)?value:[];
+ }catch(error){return []}
+}
+let teacherAccounts = readList("eco_teacher_accounts");
+if(!teacherAccounts.length){
+ teacherAccounts = teacherUsers.map(name=>({id:makeId(),name,password:"20260",active:true,createdAt:new Date().toISOString()}));
+ try{localStorage.setItem("eco_teacher_accounts",JSON.stringify(teacherAccounts))}catch(error){}
+}
+let loginLogs = readList("eco_login_logs");
+function makeId(){
+ return (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now())+"-"+Math.random().toString(36).slice(2,8);
+}
+function saveAccounts(){
+ try{
+  localStorage.setItem("eco_teacher_accounts",JSON.stringify(teacherAccounts));
+  localStorage.setItem("eco_login_logs",JSON.stringify(loginLogs));
+  return true;
+ }catch(error){alert("No se pudieron guardar los datos administrativos en este navegador.");return false}
+}
+function refreshLoginOptions(){
+ const sel=document.getElementById("username");
+ const chosen=sel.value;
+ sel.innerHTML='<option value="">Seleccione su usuario</option><option value="Lic. Fabiola Hurtado">Lic. Fabiola Hurtado — Administrador</option>'+
+  teacherAccounts.filter(t=>t.active).map(t=>`<option value="${escapeHTML(t.id)}">${escapeHTML(t.name)} — Docente</option>`).join("");
+ if(chosen==="Lic. Fabiola Hurtado"||teacherAccounts.some(t=>t.id===chosen&&t.active))sel.value=chosen;
+}
+function recordLogin(user,role,result){
+ loginLogs.unshift({date:new Date().toLocaleString("es-BO",{dateStyle:"short",timeStyle:"medium"}),user,role,result});
+ loginLogs=loginLogs.slice(0,300);
+ try{localStorage.setItem("eco_login_logs",JSON.stringify(loginLogs))}catch(error){}
+}
+function renderTeacherAdmin(){
+ if(currentUser!=="Lic. Fabiola Hurtado")return;
+ document.getElementById("teachersTable").innerHTML=teacherAccounts.map(t=>`<tr>
+ <td>${escapeHTML(t.name)}</td>
+ <td><span class="${t.active?'status-on':'status-off'}">${t.active?'Activo':'Bloqueado'}</span></td>
+ <td class="actions">
+ <button class="btn light" onclick="renameTeacher('${t.id}')">Editar nombre</button>
+ <button class="btn yellow" onclick="changeTeacherPassword('${t.id}')">Cambiar contraseña</button>
+ <button class="btn ${t.active?'red':'green'}" onclick="toggleTeacher('${t.id}')">${t.active?'Denegar acceso':'Permitir acceso'}</button>
+ </td></tr>`).join("")||'<tr><td colspan="3">No hay docentes registrados.</td></tr>';
+ document.getElementById("loginLogsTable").innerHTML=loginLogs.map(l=>`<tr><td>${escapeHTML(l.date)}</td><td>${escapeHTML(l.user)}</td><td>${escapeHTML(l.role)}</td><td>${escapeHTML(l.result)}</td></tr>`).join("")||'<tr><td colspan="4">Todavía no hay accesos registrados.</td></tr>';
+}
+function addTeacher(e){
+ e.preventDefault();
+ if(currentUser!=="Lic. Fabiola Hurtado")return;
+ const name=document.getElementById("teacherName").value.trim();
+ const password=document.getElementById("teacherPassword").value;
+ if(!name||password.length<4){alert("Ingrese nombre y una contraseña de al menos 4 caracteres.");return}
+ if(teacherAccounts.some(t=>t.name.toLowerCase()===name.toLowerCase())){alert("Ya existe un docente con ese nombre.");return}
+ teacherAccounts.push({id:makeId(),name,password,active:true,createdAt:new Date().toISOString()});
+ if(saveAccounts()){document.getElementById("teacherForm").reset();refreshLoginOptions();renderTeacherAdmin()}
+}
+function renameTeacher(id){
+ if(currentUser!=="Lic. Fabiola Hurtado")return;
+ const t=teacherAccounts.find(x=>x.id===id);if(!t)return;
+ const name=prompt("Nuevo nombre del docente:",t.name);if(name===null)return;
+ const clean=name.trim();if(!clean){alert("El nombre no puede estar vacío.");return}
+ if(teacherAccounts.some(x=>x.id!==id&&x.name.toLowerCase()===clean.toLowerCase())){alert("Ya existe un docente con ese nombre.");return}
+ t.name=clean;if(saveAccounts()){refreshLoginOptions();renderTeacherAdmin()}
+}
+function changeTeacherPassword(id){
+ if(currentUser!=="Lic. Fabiola Hurtado")return;
+ const t=teacherAccounts.find(x=>x.id===id);if(!t)return;
+ const password=prompt("Escriba la nueva contraseña (mínimo 4 caracteres):");if(password===null)return;
+ if(password.length<4){alert("La contraseña debe tener al menos 4 caracteres.");return}
+ t.password=password;if(saveAccounts())alert("Contraseña actualizada.");
+}
+function toggleTeacher(id){
+ if(currentUser!=="Lic. Fabiola Hurtado")return;
+ const t=teacherAccounts.find(x=>x.id===id);if(!t)return;
+ t.active=!t.active;
+ if(saveAccounts()){refreshLoginOptions();renderTeacherAdmin()}
+}
+function clearLoginLogs(){
+ if(currentUser!=="Lic. Fabiola Hurtado"||!confirm("¿Borrar todo el historial de accesos guardado en este navegador?"))return;
+ loginLogs=[];saveAccounts();renderTeacherAdmin();
+}
+function saveData(){
+ try{
+  localStorage.setItem("eco_students",JSON.stringify(students));
+  localStorage.setItem("eco_evaluations",JSON.stringify(evaluations));
+  return true;
+ }catch(error){
+  alert("No se pudieron guardar los datos en este navegador.");
+  return false;
+ }
+}
+function todayLocal(){
+ const d=new Date();
+ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+}
+function escapeHTML(value){
+ return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function login(e){
+ e.preventDefault();
+ const selected=document.getElementById("username").value;
+ const password=document.getElementById("password").value;
+ const account=teacherAccounts.find(t=>t.id===selected);
+ const isAdmin=selected==="Lic. Fabiola Hurtado"&&password==="33120";
+ const isTeacher=!!account&&account.active&&account.password===password;
+ if(!isAdmin&&!isTeacher){
+  const attempted=selected==="Lic. Fabiola Hurtado"?"Lic. Fabiola Hurtado":(account?account.name:(document.getElementById("username").selectedOptions[0]?.textContent||"Usuario desconocido"));
+  recordLogin(attempted,selected==="Lic. Fabiola Hurtado"?"Administrador":"Docente","Acceso denegado");
+  document.getElementById("loginError").textContent="Usuario o contraseña incorrectos, o acceso bloqueado.";
+  document.getElementById("loginError").classList.remove("hidden");
+  return;
+ }
+ const user=isAdmin?"Lic. Fabiola Hurtado":account.name;
+ recordLogin(user,isAdmin?"Administrador":"Docente","Acceso concedido");
+ currentUser=user;
+ document.getElementById("loginError").classList.add("hidden");
+ document.getElementById("loginScreen").classList.add("hidden");
+ document.getElementById("app").classList.remove("hidden");
+ document.getElementById("currentUser").textContent=user;
+ document.getElementById("currentRole").textContent=user==="Lic. Fabiola Hurtado"?"Administrador principal":"Usuario de consulta";
+ document.getElementById("welcome").textContent=user==="Lic. Fabiola Hurtado"?"Bienvenida, Lic. Fabiola Hurtado":"Bienvenido(a), "+user;
+ configurePermissions();
+ updateAll();
+}
+function logout(){
+ currentUser=null;
+ document.getElementById("app").classList.add("hidden");
+ document.getElementById("loginScreen").classList.remove("hidden");
+ document.getElementById("password").value="";
+}
+function configurePermissions(){
+ const admin=currentUser==="Lic. Fabiola Hurtado";
+ document.getElementById("newStudentButton").classList.toggle("hidden",!admin);
+ document.getElementById("newEvaluationButton").classList.toggle("hidden",!admin);
+ document.getElementById("adminNavButton").classList.toggle("hidden",!admin);
+}
+function showSection(name){
+ const names=["dashboard","students","evaluations","reports","thesis","admin"];
+ if(!names.includes(name))return;
+ if(name==="admin"&&currentUser!=="Lic. Fabiola Hurtado")return;
+ names.forEach(n=>document.getElementById(n+"Section").classList.toggle("hidden",n!==name));
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.section===name));
+ const titles={dashboard:"Panel de Control",students:"Registro de Estudiantes",evaluations:"Evaluaciones y Seguimiento",reports:"Generador de Reportes",thesis:"Memoria de Tesis",admin:"Gestión de docentes"};
+ document.getElementById("pageTitle").textContent=titles[name];
+ if(name==="reports")populateReportStudents();
+ if(name==="admin")renderTeacherAdmin();
+}
+function updateAll(){
+ renderDashboard();
+ renderStudents();
+ renderEvaluations();
+ populateEvaluationStudents();
+ populateReportStudents();
+ renderTeacherAdmin();
+}
+function renderDashboard(){
+ document.getElementById("totalStudents").textContent=students.length;
+ document.getElementById("totalPsycho").textContent=evaluations.filter(e=>e.type==="Psicopedagógica").length;
+ document.getElementById("totalMotor").textContent=evaluations.filter(e=>e.type==="Psicomotora").length;
+ document.getElementById("totalEvaluations").textContent=evaluations.length;
+ document.getElementById("recentStudents").innerHTML=students.slice(-5).reverse().map(s=>`<tr><td>${escapeHTML(s.name)}</td><td>${escapeHTML(s.course)}</td><td>${escapeHTML(s.tutor)}</td></tr>`).join("")||'<tr><td colspan="3">Aún no hay estudiantes registrados.</td></tr>';
+}
+function renderStudents(){
+ const search=document.getElementById("studentSearch").value.toLowerCase().trim();
+ const list=students.filter(s=>[s.name,s.course,s.tutor].some(v=>String(v||"").toLowerCase().includes(search)));
+ document.getElementById("studentsTable").innerHTML=list.map(s=>{
+  const id=JSON.stringify(s.id);
+  let a=`<button class="btn light" onclick='viewStudentReport(${id})' title="Ver reporte">Ver</button>`;
+  if(currentUser==="Lic. Fabiola Hurtado")a+=` <button class="btn yellow" onclick='editStudent(${id})'>Editar</button> <button class="btn red" onclick='deleteStudent(${id})'>Eliminar</button>`;
+  return `<tr><td><strong>${escapeHTML(s.name)}</strong></td><td>${escapeHTML(s.age)}</td><td>${escapeHTML(s.sex)}</td><td>${escapeHTML(s.course)}</td><td>${escapeHTML(s.tutor)}</td><td class="actions">${a}</td></tr>`;
+ }).join("")||'<tr><td colspan="6">No se encontraron estudiantes.</td></tr>';
+}
+function openStudentModal(id=""){
+ if(currentUser!=="Lic. Fabiola Hurtado")return;
+ document.getElementById("studentForm").reset();
+ document.getElementById("studentId").value="";
+ document.getElementById("studentModalTitle").textContent="Nuevo estudiante";
+ if(id){
+  const s=students.find(x=>x.id===id);
+  if(!s)return;
+  for(const [field,key] of [["studentName","name"],["studentAge","age"],["studentSex","sex"],["studentTutor","tutor"],["studentPhone","phone"],["studentObservation","observation"],["studentStrategies","strategies"],["studentLevel","level"],["studentShift","shift"],["studentParallel","parallel"],["studentGrade","grade"]])document.getElementById(field).value=s[key]||"";
+  if(!s.level&&s.course)document.getElementById("studentGrade").value=s.course;
+  document.getElementById("studentId").value=s.id;
+  document.getElementById("studentModalTitle").textContent="Editar estudiante";
+ }
+ document.getElementById("studentModal").classList.remove("hidden");
+}
+function closeStudentModal(){document.getElementById("studentModal").classList.add("hidden")}
+function saveStudent(e){
+ e.preventDefault();
+ if(currentUser!=="Lic. Fabiola Hurtado")return;
+ const id=document.getElementById("studentId").value;
+ const s={
+  id:id||((crypto.randomUUID&&crypto.randomUUID())||String(Date.now())),
+  name:document.getElementById("studentName").value.trim(),
+  age:document.getElementById("studentAge").value,
+  sex:document.getElementById("studentSex").value,
+  level:document.getElementById("studentLevel").value,
+  shift:document.getElementById("studentShift").value,
+  parallel:document.getElementById("studentParallel").value,
+  grade:document.getElementById("studentGrade").value,
+  course:[document.getElementById("studentLevel").value,document.getElementById("studentGrade").value,document.getElementById("studentParallel").value,document.getElementById("studentShift").value].filter(Boolean).join(" · "),
+  tutor:document.getElementById("studentTutor").value.trim(),
+  phone:document.getElementById("studentPhone").value.trim(),
+  observation:document.getElementById("studentObservation").value.trim(),
+  strategies:document.getElementById("studentStrategies").value.trim(),
+  date:todayLocal()
+ };
+ if(id){
+  const i=students.findIndex(x=>x.id===id);
+  if(i>=0)students[i]={...students[i],...s};
+ }else students.push(s);
+ if(saveData()){closeStudentModal();updateAll()}
+}
+function editStudent(id){if(currentUser==="Lic. Fabiola Hurtado")openStudentModal(id)}
+function deleteStudent(id){
+ if(currentUser!=="Lic. Fabiola Hurtado"||!confirm("¿Desea eliminar este estudiante y todas sus evaluaciones?"))return;
+ students=students.filter(s=>s.id!==id);
+ evaluations=evaluations.filter(e=>e.studentId!==id);
+ if(saveData())updateAll();
+}
+function populateEvaluationStudents(){
+ const sel=document.getElementById("evaluationStudent");
+ const old=sel.value;
+ sel.innerHTML='<option value="">Seleccionar estudiante</option>'+students.map(s=>`<option value="${escapeHTML(s.id)}">${escapeHTML(s.name)}</option>`).join("");
+ if(students.some(s=>s.id===old))sel.value=old;
+}
+function openEvaluationModal(){
+ if(currentUser!=="Lic. Fabiola Hurtado")return;
+ if(!students.length){alert("Primero registre un estudiante.");return}
+ document.getElementById("evaluationForm").reset();
+ document.getElementById("evaluationDate").value=todayLocal();
+ populateEvaluationStudents();
+ document.getElementById("evaluationModal").classList.remove("hidden");
+}
+function closeEvaluationModal(){document.getElementById("evaluationModal").classList.add("hidden")}
+function saveEvaluation(e){
+ e.preventDefault();
+ if(currentUser!=="Lic. Fabiola Hurtado")return;
+ const ev={
+  id:(crypto.randomUUID&&crypto.randomUUID())||String(Date.now()),
+  studentId:document.getElementById("evaluationStudent").value,
+  type:document.getElementById("evaluationType").value,
+  date:document.getElementById("evaluationDate").value,
+  test:document.getElementById("evaluationTest").value.trim(),
+  diagnosis:document.getElementById("evaluationDiagnosis").value.trim(),
+  recommendations:document.getElementById("evaluationRecommendations").value.trim()
+ };
+ if(!ev.studentId){alert("Seleccione un estudiante.");return}
+ evaluations.push(ev);
+ if(saveData()){closeEvaluationModal();updateAll()}
+}
+function renderEvaluations(){
+ document.getElementById("evaluationsTable").innerHTML=evaluations.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(e=>{
+  const s=students.find(x=>x.id===e.studentId);
+  const action=currentUser==="Lic. Fabiola Hurtado"?`<button class="btn red" onclick='deleteEvaluation(${JSON.stringify(e.id)})'>Eliminar</button>`:'<span class="muted small">Solo lectura</span>';
+  return `<tr><td>${escapeHTML(e.date)}</td><td><strong>${escapeHTML(s?s.name:"No encontrado")}</strong></td><td>${escapeHTML(e.type)}</td><td>${escapeHTML(e.test)}</td><td>${escapeHTML(e.diagnosis)}</td><td class="actions">${action}</td></tr>`;
+ }).join("")||'<tr><td colspan="6">Aún no hay evaluaciones registradas.</td></tr>';
+}
+function deleteEvaluation(id){
+ if(currentUser!=="Lic. Fabiola Hurtado"||!confirm("¿Eliminar esta evaluación?"))return;
+ evaluations=evaluations.filter(e=>e.id!==id);
+ if(saveData())updateAll();
+}
+function populateReportStudents(){
+ const sel=document.getElementById("reportStudent");
+ const old=sel.value;
+ sel.innerHTML='<option value="">Seleccionar estudiante</option>'+students.map(s=>`<option value="${escapeHTML(s.id)}">${escapeHTML(s.name)} — ${escapeHTML(s.course)}</option>`).join("");
+ if(students.some(s=>s.id===old))sel.value=old;
+}
+function viewStudentReport(id){showSection("reports");document.getElementById("reportStudent").value=id;generateReport()}
+function generateReport(){
+ const id=document.getElementById("reportStudent").value;
+ const s=students.find(x=>x.id===id);
+ if(!s){alert("Seleccione un estudiante.");return}
+ for(const [field,value] of [["reportName",s.name],["reportAge",s.age+" años"],["reportSex",s.sex],["reportCourse",s.course],["reportTutor",s.tutor],["reportPhone",s.phone],["reportObservations",s.observation||"Sin información registrada"],["reportStrategies",s.strategies||"Sin estrategias o adaptaciones registradas"]]){
+  document.getElementById(field).textContent=value;
+ }
+ const list=evaluations.filter(e=>e.studentId===id).sort((a,b)=>a.date.localeCompare(b.date));
+ document.getElementById("reportEvaluations").innerHTML=list.map(e=>`<div class="eval-card"><p><strong>${escapeHTML(e.type)}</strong><span style="float:right">${escapeHTML(e.date)}</span></p><p><strong>Test:</strong> ${escapeHTML(e.test)}</p><p><strong>Resultado:</strong><br>${escapeHTML(e.diagnosis)}</p><p><strong>Recomendaciones:</strong><br>${escapeHTML(e.recommendations)}</p></div>`).join("")||'<p>No existen evaluaciones registradas.</p>';
+ document.getElementById("reportPreview").classList.remove("hidden");
+}
+ 
+document.getElementById("loginForm").addEventListener("submit",login);
+document.getElementById("studentForm").addEventListener("submit",saveStudent);
+document.getElementById("evaluationForm").addEventListener("submit",saveEvaluation);
+document.getElementById("teacherForm").addEventListener("submit",addTeacher);
+refreshLoginOptions();
+</script>
+</body>
+</html>
